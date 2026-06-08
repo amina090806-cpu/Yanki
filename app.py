@@ -79,16 +79,7 @@ def save_uploaded_file(file):
 # =========================================================
 
 def get_db_connection():
-
-    return psycopg2.connect(
-        host="localhost",
-        database="Yanki",
-        user="postgres",
-        password="DiploumHide0143STRAYKIDS_3",
-        client_encoding='UTF8'
-    )
-
-
+    return psycopg2.connect(os.environ.get("DATABASE_URL"))
 # =========================================================
 # HOME
 # =========================================================
