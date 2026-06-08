@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>{{ event.title }}</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#F5E6DC;
+    font-family:Arial,sans-serif;
+    color:#3A2E2A;
+    min-height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    padding:40px 0 80px;
+}
+
+/* ====================================================== */
+/* HEADER */
+/* ====================================================== */
+
+.banner-wrapper{
+    position:relative;
+    width:100%;
+    height:450px;
+    overflow:hidden;
+    border:4px solid #E47D7B;
+    background:#d6b1d6;
+}
+
+.banner{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.banner-overlay{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    padding:35px;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,0.88),
+        rgba(0,0,0,0)
+    );
+}
+
+.title{
+    color:white;
+    font-size:52px;
+    margin-bottom:10px;
+    font-family:'Noto Serif', serif;
+}
+
+.event-meta{
+    color:white;
+    font-size:18px;
+    line-height:1.6;
+}
+
+/* ====================================================== */
+/* CARDS */
+/* ====================================================== */
+
+.card{
+    background:white;
+    margin-top:35px;
+    padding:35px;
+    border-left:6px solid #E47D7B;
+}
+
+.card-title{
+    font-size:34px;
+    color:#850004;
+    margin-bottom:25px;
+    font-family:'Noto Serif', serif;
+}
+
+.description{
+    white-space:pre-line;
+    line-height:1.7;
+    font-size:17px;
+}
+
+/* ====================================================== */
+/* FORM */
+/* ====================================================== */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.full{
+    grid-column:1 / -1;
+}
+
+.input,
+.textarea,
+.select{
+
+    width:100%;
+
+    padding:14px;
+
+    border:2px solid #E47D7B;
+
+    background:white;
+
+    color:#3A2E2A;
+
+    font-size:16px;
+
+    outline:none;
+
+    transition:0.2s;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus{
+    border-color:#850004;
+}
+
+.textarea{
+    min-height:140px;
+    resize:vertical;
+}
+
+.label{
+    display:block;
+    margin-bottom:10px;
+    color:#850004;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.section-title{
+    margin-top:20px;
+    margin-bottom:20px;
+    color:#850004;
+    font-size:24px;
+}
+
+/* ====================================================== */
+/* FILE */
+/* ====================================================== */
+
+.file-box{
+    border:2px dashed #E47D7B;
+    padding:18px;
+    margin-bottom:20px;
+}
+
+/* ====================================================== */
+/* BUTTON */
+/* ====================================================== */
+
+.btn{
+    background:#850004;
+    color:white;
+
+    border:none;
+
+    padding:18px 35px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    font-size:16px;
+
+    margin-top:10px;
+}
+
+.btn:hover{
+    background:#E47D7B;
+}
+
+.login-btn{
+    display:inline-block;
+    text-decoration:none;
+}
+
+/* ====================================================== */
+/* STATUS */
+/* ====================================================== */
+
+.notice{
+    background:#fff3f3;
+    border-left:5px solid #E47D7B;
+    padding:18px;
+    margin-bottom:25px;
+}
+
+/* ====================================================== */
+/* HIDDEN */
+/* ====================================================== */
+
+.hidden{
+    display:none;
+}
+
+/* ====================================================== */
+/* RESPONSIVE */
+/* ====================================================== */
+
+@media(max-width:900px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .title{
+        font-size:38px;
+    }
+
+    .banner-wrapper{
+        height:320px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ================================================= -->
+    <!-- EVENT HEADER -->
+    <!-- ================================================= -->
+
+    <div class="banner-wrapper">
+
+        <img src="{{ event.stage_photo or url_for('static', filename='images/event_default.jpg') }}"
+             class="banner">
+
+        <div class="banner-overlay">
+
+            <h1 class="title">
+                {{ event.title }}
+            </h1>
+
+            <div class="event-meta">
+
+                {{ event.theme }}
+                <br>
+
+                {{ event.location }}
+
+                {% if event.event_date %}
+
+                    <br>
+
+                    {{ event.event_date.strftime('%d.%m.%Y') }}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- DESCRIPTION -->
+    <!-- ================================================= -->
+
+    <div class="card">
+
+        <h2 class="card-title">
+            О мероприятии
+        </h2>
+
+        <div class="description">
+
+            {{ event.description or 'Описание мероприятия скоро появится.' }}
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- RULES -->
+    <!-- ================================================= -->
+
+    {% if event.rules %}
+
+    <div class="card">
+
+        <h2 class="card-title">
+            Правила
+        </h2>
+
+        <div class="description">
+
+            {{ event.rules }}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ================================================= -->
+    <!-- APPLICATION -->
+    <!-- ================================================= -->
+
+    <div class="card">
+
+        <h2 class="card-title">
+            Подача заявки
+        </h2>
+
+        {% if event.deadline %}
+
+        <div class="notice">
+
+            Дедлайн подачи заявок:
+            <strong>
+
+                {{ event.deadline.strftime('%d.%m.%Y') }}
+
+            </strong>
+
+        </div>
+
+        {% endif %}
+
+        <form action="{{ url_for('apply_event', event_id=event.id) }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <!-- TYPE -->
+
+            <div class="full">
+
+                <label class="label">
+                    Тип заявки
+                </label>
+
+                <select name="application_type"
+                        class="select"
+                        onchange="changeType(this.value)"
+                        required>
+
+                    <option value="">
+                        Выберите тип заявки
+                    </option>
+
+                    <option value="performer">
+                        Выступающий
+                    </option>
+
+                    <option value="volunteer">
+                        Волонтёр
+                    </option>
+
+                    <option value="fair">
+                        Ярмарка
+                    </option>
+
+                    <option value="photographer">
+                        Фотограф
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- COMMON -->
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label class="label">
+                        ФИО
+                    </label>
+
+                    <input type="text"
+                           name="full_name"
+                           class="input"
+                           required>
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Никнейм
+                    </label>
+
+                    <input type="text"
+                           name="nickname"
+                           class="input"
+                           required>
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Телефон
+                    </label>
+
+                    <input type="text"
+                           name="phone"
+                           class="input">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Социальные сети
+                    </label>
+
+                    <input type="text"
+                           name="social_link"
+                           class="input">
+
+                </div>
+
+                <div class="full">
+
+                    <label class="label">
+                        Название номера / команды / стенда
+                    </label>
+
+                    <input type="text"
+                           name="performance_name"
+                           class="input">
+
+                </div>
+
+                <div class="full">
+
+                    <label class="label">
+                        Комментарий
+                    </label>
+
+                    <textarea name="comment"
+                              class="textarea"></textarea>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- PERFORMER -->
+            <!-- ================================================= -->
+
+            <div id="performer-fields"
+                 class="hidden">
+
+                <div class="section-title">
+                    Данные выступления
+                </div>
+
+                <div class="form-grid">
+
+                    <div>
+
+                        <label class="label">
+                            Тип выступления
+                        </label>
+
+                        <select name="performance_type"
+                                class="select">
+
+                            <option value="solo">
+                                Соло
+                            </option>
+
+                            <option value="duet">
+                                Дуэт
+                            </option>
+
+                            <option value="trio">
+                                Трио
+                            </option>
+
+                            <option value="group">
+                                Группа
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="full">
+
+                        <label class="label">
+                            Описание выступления
+                        </label>
+
+                        <textarea name="performance_description"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                    <div class="file-box">
+
+                        <label class="label">
+                            Видео репетиции
+                        </label>
+
+                        <input type="file"
+                               name="rehearsal_video"
+                               class="input">
+
+                    </div>
+
+                    <div class="file-box">
+
+                        <label class="label">
+                            Музыкальный трек
+                        </label>
+
+                        <input type="file"
+                               name="music_track"
+                               class="input">
+
+                    </div>
+
+                    <div class="file-box">
+
+                        <label class="label">
+                            Видеофон
+                        </label>
+
+                        <input type="file"
+                               name="video_background"
+                               class="input">
+
+                    </div>
+
+                    <div class="file-box">
+
+                        <label class="label">
+                            Фото костюма
+                        </label>
+
+                        <input type="file"
+                               name="costume_photo"
+                               class="input">
+
+                    </div>
+
+                    <div class="full">
+
+                        <label class="label">
+                            Ссылка на персонажа
+                        </label>
+
+                        <input type="text"
+                               name="character_reference"
+                               class="input">
+
+                    </div>
+
+                    <div>
+
+                        <label class="label">
+                            Пожелания по свету
+                        </label>
+
+                        <textarea name="light_wishes"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                    <div>
+
+                        <label class="label">
+                            Пожелания по месту в программе
+                        </label>
+
+                        <textarea name="program_wishes"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- FAIR -->
+            <!-- ================================================= -->
+
+            <div id="fair-fields"
+                 class="hidden">
+
+                <div class="section-title">
+                    Данные ярмарки
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="full">
+
+                        <label class="label">
+                            Описание ассортимента
+                        </label>
+
+                        <textarea name="assortment_description"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                    <div class="full">
+
+                        <label class="label">
+                            Пожелания по размещению
+                        </label>
+
+                        <textarea name="placement_wishes"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- VOLUNTEER -->
+            <!-- ================================================= -->
+
+            <div id="volunteer-fields"
+                 class="hidden">
+
+                <div class="section-title">
+                    Волонтёрство
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="full">
+
+                        <label class="label">
+                            Желаемая роль / занятость
+                        </label>
+
+                        <textarea name="volunteer_role"
+                                  class="textarea"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- SUBMIT -->
+            <!-- ================================================= -->
+
+            {% if session.get('user_id') %}
+
+                <button type="submit"
+                        class="btn">
+
+                    ОТПРАВИТЬ ЗАЯВКУ
+
+                </button>
+
+            {% else %}
+
+                <a href="{{ url_for('login') }}"
+                   class="btn login-btn">
+
+                    ВОЙДИТЕ ДЛЯ ПОДАЧИ ЗАЯВКИ
+
+                </a>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function changeType(type){
+
+    document
+        .getElementById('performer-fields')
+        .classList.add('hidden');
+
+    document
+        .getElementById('fair-fields')
+        .classList.add('hidden');
+
+    document
+        .getElementById('volunteer-fields')
+        .classList.add('hidden');
+
+    if(type === 'performer'){
+
+        document
+            .getElementById('performer-fields')
+            .classList.remove('hidden');
+
+    }
+
+    if(type === 'fair'){
+
+        document
+            .getElementById('fair-fields')
+            .classList.remove('hidden');
+
+    }
+
+    if(type === 'volunteer'){
+
+        document
+            .getElementById('volunteer-fields')
+            .classList.remove('hidden');
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

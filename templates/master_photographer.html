@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотограф / Видеограф | Yankī</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        @font-face {
+            font-family: 'YankiFont';
+            src: url("{{ url_for('static', filename='fonts/yaya.otf') }}") format('opentype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #3A2E2A;
+            background-image: url("{{ url_for('static', filename='images/gliczin.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* ТЁМНЫЙ ОВЕРЛЕЙ ДЛЯ ЧИТАЕМОСТИ */
+        .overlay {
+            min-height: 100vh;
+            background: rgba(245, 230, 220, 0.75);
+            padding: 40px 5vw;
+        }
+
+        /* ЗАГОЛОВОК */
+        h1 {
+            font-family: 'YankiFont', serif;
+            font-size: 6vh;
+            color: #850004;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* ПОДЗАГОЛОВОК */
+        .subtitle {
+            text-align: center;
+            font-family: 'Noto Serif', serif;
+            font-style: italic;
+            margin-bottom: 40px;
+            color: #3A2E2A;
+        }
+
+        /* СЕТКА БЛОКОВ */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* КАРТОЧКИ */
+        .card {
+            background: rgba(255,255,255,0.7);
+            border: 2px solid #E47D7B;
+            padding: 20px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(200,162,200,0.25);
+        }
+
+        .card-title {
+            font-family: 'YankiFont', serif;
+            font-size: 3vh;
+            color: #850004;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.8vh;
+        }
+
+        /* КНОПКА */
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #E47D7B;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-family: 'Noto Serif', serif;
+        }
+
+        .btn:hover {
+            background: #850004;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <h1>Профиль мастера</h1>
+    <div class="subtitle">Здесь вы можете управлять услугами и портфолио</div>
+
+    <div class="grid">
+
+        <!-- БЛОК 1 -->
+        <div class="card">
+            <div class="card-title">Портфолио</div>
+            <div class="card-text">
+                Добавляйте свои работы (с модерацией при необходимости).
+            </div>
+            <a href="/master/edit?type=photographer&section=portfolio" class="btn">
+    Добавить работу
+</a>
+        </div>
+
+        <!-- БЛОК 2 -->
+        <div class="card">
+            <div class="card-title">Услуги</div>
+            <div class="card-text">
+                Описание ваших услуг и специализации.
+            </div>
+<a href="/master/edit?type=photographer&section=services" class="btn">
+    Редактировать
+</a>
+        </div>
+
+        <!-- БЛОК 3 -->
+        <div class="card">
+            <div class="card-title">Прайс</div>
+            <div class="card-text">
+                Настройка цен на услуги.
+            </div>
+<a href="/master/edit?type=photographer&section=price" class="btn">
+    Изменить
+</a>
+        </div>
+
+        <!-- БЛОК 4 -->
+        <div class="card">
+            <div class="card-title">Заказы</div>
+            <div class="card-text">
+                Просмотр и управление заказами.
+            </div>
+<a href="/master/edit?type=photographer&section=orders" class="btn">
+    Открыть
+</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

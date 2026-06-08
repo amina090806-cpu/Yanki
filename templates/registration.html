@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Yankī</title>
+
+    <style>
+        .email-wrapper { 
+            position: relative;
+            display: flex; 
+            align-items: center;
+            width: 100%;
+        } 
+
+        .send-code-btn { 
+            position: absolute; 
+            right: 5px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: #E47D7B;
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            font-size: 1.4vh; 
+            cursor: pointer; 
+            font-family: 'Noto Serif', serif; 
+            border-radius: 3px;
+            z-index: 10;
+        } 
+
+        .verification-popup { 
+            position: absolute; 
+            left: 105%; 
+            top: 0;
+            width: 15vw; 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 2px solid #E47D7B; 
+            padding: 10px; 
+            display: none;
+            flex-direction: column; 
+            gap: 5px; 
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1); 
+            z-index: 100; 
+        } 
+
+        .code-input { 
+            text-align: center;
+            letter-spacing: 5px; 
+            font-weight: bold; 
+        } 
+
+        .code-timer { 
+            font-size: 1.2vh; 
+            color: #3A2E2A; 
+            text-align: center; 
+            font-family: 'Noto Serif', serif;
+        } 
+
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(-10px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        } 
+
+        .show-popup { 
+            display: flex !important; 
+            animation: slideIn 0.3s ease-out forwards; 
+        } 
+
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        @font-face { 
+            font-family: 'YankiFont'; 
+            src: url('./static/fonts/yaya.otf') format('opentype'); 
+            font-weight: normal; 
+            font-style: normal; 
+        } 
+
+        * { margin: 0; padding: 0; box-sizing: border-box; } 
+
+        body { 
+            background-color: #F5E6DC; 
+            height: 100vh; 
+            width: 100vw; 
+            font-family: Arial, sans-serif; 
+            overflow: hidden; 
+        } 
+
+        .page-container { 
+            position: relative; 
+            width: 100vw; 
+            height: 100vh; 
+            background-image: url('./static/images/lotos.png'); 
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-position: right 0% bottom -22vh; 
+        } 
+
+        .menu-button { 
+            position: absolute; 
+            top: 5.5vh; 
+            left: 2vw; 
+            width: 50px; 
+            height: 35px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            cursor: pointer; 
+            z-index: 20; 
+        } 
+
+        .menu-line { 
+            width: 100%; 
+            height: 6px; 
+            background-color: #E47D7B; 
+            border-radius: 10px; 
+        } 
+
+        .page-title { 
+            position: absolute; 
+            top: 3.5vh; 
+            left: 8vw; 
+            font-size: 9vh; 
+            font-family: 'YankiFont', serif;
+            line-height: 1; 
+            background: linear-gradient(to right, #C8A2C8 50%, #C8A2C8 50%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: -2px 0px 0px #850004; 
+        } 
+
+        .registration-form { 
+            position: absolute; 
+            top: 16vh; 
+            left: 8vw; 
+            width: 40vw;
+            max-height: 80vh; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1vh; 
+            padding-right: 15px;
+            overflow-y: auto; 
+        } 
+
+        .input-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px;
+        } 
+
+        .input-group label { 
+            font-family: 'Noto Serif', serif; 
+            font-size: 1.6vh; 
+            color: #3A2E2A; 
+            margin-left: 5px; 
+        } 
+
+        .reg-input, .reg-select { 
+            width: 100%;
+            height: 50px; 
+            border: 2px solid #E47D7B; 
+            background: rgba(255, 255, 255, 0.6); 
+            padding: 0 15px; 
+            font-size: 1.9vh; 
+            color: #3A2E2A; 
+            outline: none;
+        } 
+
+        .policy-group { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 1vh; 
+            border: 1px solid #E47D7B;
+            background: rgba(255, 255, 255, 0.3); 
+        } 
+
+        .submit-btn { 
+            margin-top: 1.5vh; 
+            height: 60px; 
+            background-color: #E47D7B; 
+            color: white; 
+            border: none; 
+            font-family: 'YankiFont', serif;
+            font-size: 2.8vh; 
+            cursor: pointer; 
+        } 
+
+        .submit-btn:hover { 
+            background-color: #850004; 
+        } 
+
+        .login-link { 
+            margin-top: 2vh; 
+            text-align: center; 
+            font-family: 'Noto Serif', serif; 
+            font-style: italic;
+            font-size: 2.2vh; 
+            color: #3A2E2A; 
+            text-decoration: none; 
+        } 
+
+        .login-link b { color: #E47D7B; }
+    </style>
+</head>
+
+<body>
+<div class="page-container">
+
+    <div class="menu-button">
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+    </div>
+
+    <h1 class="page-title">Регистрация</h1>
+
+    <form class="registration-form" method="POST" action="/register">
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="color:#850004; font-family:Noto Serif;">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="input-group">
+            <input type="text" name="nickname" class="reg-input" placeholder="Никнейм" required>
+        </div>
+
+        <div class="input-group email-wrapper">
+            <input type="email" id="emailInput" name="email" class="reg-input" placeholder="Email" required>
+
+            <button type="button" class="send-code-btn" onclick="showVerificationField()">
+                Код
+            </button>
+
+            <div id="verificationBox" class="verification-popup">
+                <input type="text" id="codeInputField" name="verification_code"
+                       maxlength="6" class="reg-input code-input"
+                       placeholder="000000">
+                <div class="code-timer">Демо-режим</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <input type="password" name="password" class="reg-input" placeholder="Пароль" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" name="confirm_password" class="reg-input" placeholder="Повтор пароля" required>
+        </div>
+
+        <div class="input-group">
+            <input type="tel" name="phone" class="reg-input" placeholder="Телефон (необязательно)">
+        </div>
+
+        <div class="input-group">
+            <label>Город:</label>
+            <select name="city" class="reg-select">
+                <option value="Смоленск">Смоленск</option>
+                <option value="Москва">Москва</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Роль:</label>
+            <select name="role" class="reg-select">
+                <option value="user">Пользователь</option>
+                <option value="organizer">Организатор</option>
+                <option value="crafter">Крафтер</option>
+                <option value="photographer">Фотограф</option>
+                <option value="makeup_artist">Визажист</option>
+                <option value="moderator">Модератор</option>
+            </select>
+        </div>
+
+        <div class="policy-group">
+            <span>Согласен с правилами</span>
+            <input type="checkbox" required>
+        </div>
+
+        <button type="submit" class="submit-btn">СОЗДАТЬ АККАУНТ</button>
+
+        <a href="/login" class="login-link">Уже есть аккаунт? <b>Войти</b></a>
+
+    </form>
+</div>
+
+<script>
+function showVerificationField() {
+    const email = document.getElementById('emailInput').value.trim();
+
+    if (!email.includes('@')) {
+        alert('Введите корректный email');
+        return;
+    }
+
+    document.getElementById('verificationBox').classList.add('show-popup');
+
+    // демо-код (пока нет backend email сервиса)
+    document.getElementById('codeInputField').value = "123456";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль мастера</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        @font-face {
+            font-family: 'YankiFont';
+            src: url("{{ url_for('static', filename='fonts/yaya.otf') }}") format('opentype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #3A2E2A;
+            background-image: url("{{ url_for('static', filename='images/gliczin.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .overlay {
+            min-height: 100vh;
+            background: rgba(245, 230, 220, 0.75);
+            padding: 40px 5vw;
+        }
+
+        h1 {
+            font-family: 'YankiFont', serif;
+            font-size: 6vh;
+            color: #850004;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-family: 'Noto Serif', serif;
+            margin-bottom: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.8);
+            border: 2px solid #E47D7B;
+            text-decoration: none;
+            color: #3A2E2A;
+            transition: 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(200,162,200,0.3);
+        }
+
+        .card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.75);
+            border: 2px solid #E47D7B;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: Arial;
+        }
+
+        button {
+            background: #E47D7B;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #850004;
+        }
+
+        .back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #850004;
+            font-family: 'Noto Serif', serif;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+<a href="{{ url_for('master_select') }}" class="back">← назад</a>
+
+    <h1>Мастер: {{ master_type }}</h1>
+    <div class="subtitle">Управление профилем и услугами</div>
+
+    <!-- НАВИГАЦИЯ -->
+    <div class="tabs">
+        <a class="tab" href="/master/edit?type={{ master_type }}&section=portfolio">Портфолио</a>
+        <a class="tab" href="/master/edit?type={{ master_type }}&section=services">Услуги</a>
+        <a class="tab" href="/master/edit?type={{ master_type }}&section=price">Прайс</a>
+        <a class="tab" href="/master/edit?type={{ master_type }}&section=orders">Заказы</a>
+    </div>
+
+    <!-- ПОРТФОЛИО -->
+    {% if request.args.get('section') == 'portfolio' %}
+
+    <div class="card">
+        <h2>Добавить работу</h2>
+
+        <form method="POST" action="/master/save_portfolio" enctype="multipart/form-data">
+
+            <input type="text" name="title" placeholder="Название работы" required>
+
+            <textarea name="description" placeholder="Описание"></textarea>
+
+            <input type="file" name="image" required>
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+
+    {% elif request.args.get('section') == 'services' %}
+
+    <div class="card">
+        <h2>Услуги</h2>
+
+        <form method="POST" action="/master/save_services">
+
+            <textarea name="services" placeholder="Опишите ваши услуги"></textarea>
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+
+    {% elif request.args.get('section') == 'price' %}
+
+    <div class="card">
+        <h2>Прайс</h2>
+
+        <form method="POST" action="/master/save_price">
+
+            <input type="number" name="price" placeholder="Цена">
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+
+    {% elif request.args.get('section') == 'orders' %}
+
+    <div class="card">
+        <h2>Заказы</h2>
+        <p>Здесь позже будет список заказов</p>
+    </div>
+
+    {% else %}
+
+    <div class="card">
+        <h2>Выберите раздел</h2>
+        <p>Используйте меню выше</p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

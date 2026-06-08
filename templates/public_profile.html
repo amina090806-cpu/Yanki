@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>{{ user.nickname }}</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+@font-face {
+    font-family:'YankiFont';
+    src:url("{{ url_for('static', filename='fonts/yaya.otf') }}");
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#F5E6DC;
+    color:#3A2E2A;
+    font-family:Arial,sans-serif;
+}
+
+.profile-header{
+    width:100%;
+    height:35vh;
+    overflow:hidden;
+    border-bottom:3px solid #E47D7B;
+}
+
+.cover-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-main{
+    display:flex;
+    align-items:flex-end;
+    gap:30px;
+    padding:0 5vw;
+    margin-top:-80px;
+}
+
+.avatar{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    overflow:hidden;
+    border:5px solid #F5E6DC;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.nickname{
+    font-family:'YankiFont';
+    font-size:6vh;
+    background:linear-gradient(to right,#E47D7B,#C8A2C8);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.badges{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    background:#850004;
+    color:white;
+    padding:6px 12px;
+    font-size:14px;
+}
+
+.content{
+    padding:40px 5vw;
+}
+
+.block{
+    background:rgba(255,255,255,0.5);
+    border:2px solid #E47D7B;
+    padding:20px;
+    margin-bottom:30px;
+}
+
+.block h2{
+    margin-bottom:20px;
+    color:#850004;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.gallery img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.event-card,
+.portfolio-card{
+    background:white;
+    padding:15px;
+    margin-bottom:15px;
+    border-left:5px solid #E47D7B;
+}
+
+.event-photo{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    margin-bottom:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="profile-header">
+
+    <img class="cover-img"
+         src="{{ user.cover_url or url_for('static','images/cover.jpg') }}">
+
+</div>
+
+<div class="profile-main">
+
+    <div class="avatar">
+
+        <img src="{{ user.avatar_url or url_for('static','images/avatar.png') }}">
+
+    </div>
+
+    <div>
+
+        <div class="nickname">
+            {{ user.nickname }}
+        </div>
+
+<div class="badges">
+
+    {% if user.organizer_verified %}
+        <div class="badge">
+            Организатор
+        </div>
+    {% endif %}
+
+    {% if user.volunteer_verified %}
+        <div class="badge">
+            Волонтер
+        </div>
+    {% endif %}
+
+    {% if user.master_verified %}
+        <div class="badge">
+            Мастер
+        </div>
+    {% endif %}
+
+    {% if user.market_verified %}
+        <div class="badge">
+            Ярмарка
+        </div>
+    {% endif %}
+
+</div>
+
+    </div>
+
+</div>
+
+<div class="content">
+
+    <!-- GALLERY -->
+
+    <div class="block">
+
+        <h2>Галерея</h2>
+
+        <div class="gallery">
+
+            {% for image in gallery %}
+
+                <img src="{{ image.image_url }}">
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- EVENTS -->
+
+    {% if events %}
+
+    <div class="block">
+
+        <h2>Мероприятия</h2>
+
+        {% for event in events %}
+
+        <div class="event-card">
+
+            {% if event.stage_photo %}
+
+                <img src="{{ event.stage_photo }}"
+                     class="event-photo">
+
+            {% endif %}
+
+            <h3>{{ event.title }}</h3>
+
+            <p>{{ event.theme }}</p>
+
+            <p>{{ event.location }}</p>
+
+            <p>{{ event.event_date }}</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+    <!-- PORTFOLIO -->
+
+    {% if portfolio %}
+
+    <div class="block">
+
+        <h2>Портфолио</h2>
+
+        {% for work in portfolio %}
+
+        <div class="portfolio-card">
+
+            <h3>{{ work.title }}</h3>
+
+            <p>{{ work.description }}</p>
+
+            <p>{{ work.price }} ₽</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель модератора</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-right: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+        }
+
+        .approve {
+            background: #2ecc71;
+        }
+
+        .reject {
+            background: #e74c3c;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #333;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <h1>⚖️ Панель модератора</h1>
+
+    <a class="back" href="{{ url_for('cabinet') }}">
+        ← Назад в кабинет
+    </a>
+</div>
+
+<!-- EVENTS -->
+<div class="section">
+
+    <h2>🎤 Мероприятия на модерации</h2>
+
+    {% if events %}
+
+        {% for event in events %}
+
+            <div class="card">
+
+                <h3>{{ event.title }}</h3>
+
+                <p><b>Тематика:</b> {{ event.theme }}</p>
+                <p><b>Дата:</b> {{ event.event_date }}</p>
+                <p><b>Статус:</b> {{ event.status }}</p>
+
+                <a class="btn approve"
+                   href="{{ url_for('approve_event', event_id=event.id) }}">
+                    Одобрить
+                </a>
+
+                <a class="btn reject"
+                   href="{{ url_for('reject_event', event_id=event.id) }}">
+                    Отклонить
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+        <p>Нет мероприятий на модерации</p>
+    {% endif %}
+
+</div>
+
+<!-- MARKET -->
+<div class="section">
+
+    <h2>🛍️ Ярмарка на модерации</h2>
+
+    {% if market_items %}
+
+        {% for item in market_items %}
+
+            <div class="card">
+
+                <h3>{{ item.name }}</h3>
+
+                <p><b>Цена:</b> {{ item.price }} ₽</p>
+                <p><b>Количество:</b> {{ item.quantity }}</p>
+                <p><b>Статус:</b> {{ item.status }}</p>
+
+                <a class="btn approve"
+                   href="{{ url_for('approve_market', item_id=item.id) }}">
+                    Одобрить
+                </a>
+
+                <a class="btn reject"
+                   href="{{ url_for('reject_market', item_id=item.id) }}">
+                    Отклонить
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+        <p>Нет товаров на модерации</p>
+    {% endif %}
+
+</div>
+
+<!-- VOLUNTEERS -->
+<div class="section">
+
+    <h2>🤝 Волонтёры</h2>
+
+    {% if volunteers %}
+
+        {% for v in volunteers %}
+
+            <div class="card">
+
+                <p><b>Имя:</b> {{ v.full_name }}</p>
+                <p><b>Возраст:</b> {{ v.age }}</p>
+                <p><b>Опыт:</b> {{ v.experience }}</p>
+                <p><b>Навыки:</b> {{ v.skills }}</p>
+                <p><b>Контакты:</b> {{ v.contacts }}</p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+        <p>Нет заявок</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявки: {{ event.title }}</title>
+    <style>
+        body { background: #F5E6DC; color: #3A2E2A; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        h1 { color: #850004; border-bottom: 3px solid #E47D7B; padding-bottom: 10px; }
+        .app-card { background: white; padding: 20px; margin-bottom: 20px; border-left: 5px solid #E47D7B; display: flex; justify-content: space-between; }
+        .app-info { max-width: 70%; }
+        .app-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+        .btn { padding: 8px 12px; text-decoration: none; color: white; border-radius: 5px; font-size: 14px; text-align: center; cursor: pointer; }
+        .btn-check { background: #E47D7B; }
+        .btn-accept { background: #28a745; }
+        .btn-reject { background: #dc3545; }
+        .btn-reserve { background: #ffc107; color: black; }
+        .favorite-star { font-size: 24px; text-decoration: none; color: #ccc; transition: 0.2s; }
+        .is-fav { color: #ffc107; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; background: #555; }
+    </style>
+</head>
+<body>
+
+    <a href="{{ url_for('cabinet') }}" style="color: #850004; text-decoration: none;">← Вернуться в кабинет</a>
+    
+    <h1>Заявки на "{{ event.title }}"</h1>
+
+    {% set status_dict = {
+        'pending': 'Не просмотрено',
+        'checking': 'На рассмотрении',
+        'accepted': 'Принято',
+        'rejected': 'Отклонено',
+        'reserve': 'В резерве'
+    } %}
+
+    {% if not applications %}
+        <p>На это мероприятие пока нет заявок.</p>
+    {% endif %}
+
+    {% for app in applications %}
+    <div class="app-card">
+        <div class="app-info">
+            <h2>{{ app.nickname }} ({{ app.full_name }})</h2>
+            <p><strong>Тип заявки:</strong> {{ app.application_type }}</p>
+            <p><strong>Соцсеть:</strong> {{ app.social_link }} | <strong>Телефон:</strong> {{ app.phone }}</p>
+            <p><strong>Название выступления/стенда:</strong> {{ app.performance_name }}</p>
+            <p><strong>Описание:</strong> {{ app.performance_description }}</p>
+            <p><strong>Комментарий участника:</strong> {{ app.comment }}</p>
+            
+            <p>Текущий статус: <span class="status-badge">{{ status_dict[app.status] }}</span></p>
+        </div>
+
+        <div class="app-actions">
+            <a href="{{ url_for('favorite_application', application_id=app.id) }}" class="favorite-star {% if app.is_favorite %}is-fav{% endif %}" title="Добавить в избранное">
+                {% if app.is_favorite %}★{% else %}☆{% endif %}
+            </a>
+
+            <a href="{{ url_for('update_application_status', application_id=app.id, status='checking') }}" class="btn btn-check">Взять на рассмотрение</a>
+            <a href="{{ url_for('update_application_status', application_id=app.id, status='accepted') }}" class="btn btn-accept">Принять заявку</a>
+            <a href="{{ url_for('update_application_status', application_id=app.id, status='reserve') }}" class="btn btn-reserve">В резерв</a>
+            <a href="{{ url_for('update_application_status', application_id=app.id, status='rejected') }}" class="btn btn-reject">Отклонить</a>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

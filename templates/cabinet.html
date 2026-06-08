@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Личный кабинет | Yankī</title>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        @font-face {
+            font-family: 'YankiFont';
+            src: url("{{ url_for('static', filename='fonts/yaya.otf') }}") format('opentype');
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background-color:#F5E6DC;
+            font-family:Arial,sans-serif;
+            color:#3A2E2A;
+            overflow-x:hidden;
+        }
+
+        .cabinet-wrapper{
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            background-image:url("{{ url_for('static', filename='images/lotos.png') }}");
+            background-attachment:fixed;
+            background-size:cover;
+            background-position:center;
+        }
+
+        .menu-back{
+            position:fixed;
+            top:25px;
+            left:25px;
+            z-index:100;
+            cursor:pointer;
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
+
+        .menu-line{
+            width:40px;
+            height:5px;
+            background-color:#E47D7B;
+            border-radius:5px;
+        }
+
+        .logout-btn{
+            position:fixed;
+            top:25px;
+            right:25px;
+            z-index:100;
+            background:#850004;
+            color:white;
+            padding:8px 15px;
+            text-decoration:none;
+            font-family:'Noto Serif', serif;
+            font-style:italic;
+            font-size:14px;
+            border-radius:4px;
+            transition:0.3s;
+        }
+
+        .logout-btn:hover{
+            background:#E47D7B;
+        }
+
+        .profile-header{
+            width:100%;
+            height:35vh;
+            position:relative;
+            overflow:hidden;
+            border-bottom:3px solid #E47D7B;
+        }
+
+        .cover-img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .cover-overlay{
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,0.3);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            opacity:0;
+            transition:0.3s;
+            pointer-events:none;
+            font-family:'Noto Serif', serif;
+            font-style:italic;
+        }
+
+        .profile-header:hover .cover-overlay{
+            opacity:1;
+        }
+
+        .profile-main-info{
+            display:flex;
+            align-items:flex-end;
+            gap:30px;
+            padding:0 5vw;
+            margin-top:-80px;
+        }
+
+        .avatar-container{
+            width:180px;
+            height:180px;
+            border-radius:50%;
+            overflow:hidden;
+            border:5px solid #F5E6DC;
+            position:relative;
+            cursor:pointer;
+        }
+
+        .avatar-img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .edit-overlay{
+            position:absolute;
+            bottom:0;
+            height:30%;
+            width:100%;
+            background:rgba(0,0,0,0.4);
+            color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            opacity:0;
+            transition:0.3s;
+        }
+
+        .avatar-container:hover .edit-overlay{
+            opacity:1;
+        }
+
+        .profile-nickname{
+            font-family:'YankiFont', serif;
+            font-size:6vh;
+            background:linear-gradient(to right, #E47D7B, #C8A2C8);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .profile-city{
+            font-family:'Noto Serif', serif;
+            font-style:italic;
+        }
+
+        .main-layout{
+            display:grid;
+            grid-template-columns:300px 1fr;
+            gap:30px;
+            padding:40px 5vw;
+        }
+
+        .sidebar{
+            background:rgba(255,255,255,0.4);
+            backdrop-filter:blur(10px);
+            border:2px solid #E47D7B;
+            padding:25px;
+        }
+
+        .sidebar-title{
+            font-family:'YankiFont';
+            color:#850004;
+            margin-bottom:15px;
+        }
+
+        .info-item{
+            margin-bottom:12px;
+        }
+
+        .info-label{
+            color:#E47D7B;
+            font-weight:bold;
+            display:block;
+        }
+
+        .content-area{
+            background:rgba(255,255,255,0.3);
+            border:2px dashed #E47D7B;
+            padding:20px;
+            min-height:420px;
+        }
+
+        .tab-content{
+            display:none;
+        }
+
+        .tab-content.active{
+            display:block;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.8);
+            border-left:5px solid #E47D7B;
+            padding:15px;
+            margin-bottom:15px;
+        }
+
+        .gallery{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:10px;
+        }
+
+        .gallery-item{
+            height:120px;
+            background:#C8A2C8;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            cursor:pointer;
+        }
+
+        .gallery-photo{
+            width:100%;
+            height:120px;
+            object-fit:cover;
+            border-radius:8px;
+        }
+
+        .role-select{
+            width:100%;
+            margin-top:10px;
+            padding:8px;
+            border:2px solid #E47D7B;
+            background:rgba(255,255,255,0.6);
+        }
+
+        .event-input,
+        .event-textarea{
+            width:100%;
+            margin-top:10px;
+            margin-bottom:15px;
+            padding:12px;
+            border:2px solid #E47D7B;
+            background:rgba(255,255,255,0.8);
+        }
+
+        .event-textarea{
+            min-height:120px;
+            resize:vertical;
+        }
+
+        .event-btn{
+            background:#850004;
+            color:white;
+            border:none;
+            padding:15px 25px;
+            cursor:pointer;
+            font-size:16px;
+            transition:0.3s;
+        }
+
+        .event-btn:hover{
+            background:#E47D7B;
+        }
+
+        .event-card{
+            background:rgba(255,255,255,0.85);
+            margin-top:20px;
+            border-left:5px solid #E47D7B;
+            overflow:hidden;
+        }
+
+        .event-photo{
+            width:100%;
+            height:250px;
+            object-fit:cover;
+        }
+
+        .event-content{
+            padding:20px;
+        }
+
+        .event-buttons{
+            margin-top:20px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .event-manage-btn{
+            background:#850004;
+            color:white;
+            text-decoration:none;
+            padding:10px 18px;
+            transition:0.3s;
+        }
+
+        .event-manage-btn:hover{
+            background:#E47D7B;
+        }
+
+        .role-badge{
+            background:#850004;
+            color:white;
+            padding:6px 14px;
+            border-radius:20px;
+            font-size:13px;
+            font-family:'Noto Serif', serif;
+            height:fit-content;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<form id="avatarForm"
+      action="{{ url_for('upload_image', image_type='avatar') }}"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display:none;">
+
+    <input type="file"
+           id="avatarInput"
+           name="file"
+           accept="image/*"
+           onchange="document.getElementById('avatarForm').submit()">
+
+</form>
+
+<form id="coverForm"
+      action="{{ url_for('upload_image', image_type='cover') }}"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display:none;">
+
+    <input type="file"
+           id="coverInput"
+           name="file"
+           accept="image/*"
+           onchange="document.getElementById('coverForm').submit()">
+
+</form>
+
+<form id="galleryForm"
+      action="{{ url_for('upload_gallery') }}"
+      method="POST"
+      enctype="multipart/form-data"
+      style="display:none;">
+
+    <input type="file"
+           id="galleryInput"
+           name="file"
+           accept="image/*"
+           onchange="document.getElementById('galleryForm').submit()">
+
+</form>
+
+<div class="cabinet-wrapper">
+
+    <a href="{{ url_for('index') }}"
+       class="menu-back">
+
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+        <div class="menu-line"></div>
+
+    </a>
+
+    <a href="{{ url_for('logout') }}"
+       class="logout-btn">
+
+        Выйти 🚪
+
+    </a>
+
+    <div class="profile-header"
+         onclick="triggerFile('coverInput')">
+
+        <img class="cover-img"
+             src="{{ user.cover_url or url_for('static','images/cover.jpg') }}">
+
+        <div class="cover-overlay">
+            СМЕНИТЬ ОБЛОЖКУ
+        </div>
+
+    </div>
+
+    <div class="profile-main-info">
+
+        <div class="avatar-container"
+             onclick="triggerFile('avatarInput')">
+
+            <img class="avatar-img"
+                 src="{{ user.avatar_url or url_for('static','images/avatar.png') }}">
+
+            <div class="edit-overlay">
+                ИЗМЕНИТЬ
+            </div>
+
+        </div>
+
+        <div>
+
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+
+                <h1 class="profile-nickname">
+                    {{ user.nickname }}
+                </h1>
+
+                {% if user.organizer_verified %}
+                    <div class="role-badge">
+                        Организатор
+                    </div>
+                {% endif %}
+
+                {% if user.volunteer_verified %}
+                    <div class="role-badge">
+                        Волонтер
+                    </div>
+                {% endif %}
+
+                {% if user.master_verified %}
+                    <div class="role-badge">
+                        Мастер
+                    </div>
+                {% endif %}
+
+                {% if user.market_verified %}
+                   <div class="role-badge">
+                        Ярмарка
+                    </div>
+                {% endif %}
+                
+
+            </div>
+
+            <p class="profile-city">
+                {{ user.city }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="main-layout">
+
+        <aside class="sidebar">
+
+            <h2 class="sidebar-title">
+                Профиль
+            </h2>
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Email:
+                </span>
+
+                {{ user.email }}
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Телефон:
+                </span>
+
+                {{ user.phone or '—' }}
+
+            </div>
+
+            <form action="{{ url_for('update_privacy') }}"
+                  method="POST"
+                  style="margin-top:20px;">
+
+                <div class="info-item">
+
+                    <label style="display:flex;gap:10px;align-items:center;">
+
+                        <input type="checkbox"
+                               name="hide_email"
+
+                               {% if user.hide_email %}
+                                    checked
+                               {% endif %}>
+
+                        Скрыть email
+
+                    </label>
+
+                </div>
+
+                <div class="info-item">
+
+                    <label style="display:flex;gap:10px;align-items:center;">
+
+                        <input type="checkbox"
+                               name="hide_phone"
+
+                               {% if user.hide_phone %}
+                                    checked
+                               {% endif %}>
+
+                        Скрыть телефон
+
+                    </label>
+
+                </div>
+
+                <button type="submit"
+                        class="event-btn"
+                        style="width:100%;padding:10px;font-size:14px;">
+
+                    Сохранить
+
+                </button>
+
+            </form>
+
+<span class="info-label"
+      style="margin-top:25px;display:block;">
+
+    Активная роль:
+
+</span>
+
+<select class="role-select"
+        onchange="switchRole(this.value)">
+
+    <option value="user">
+        Пользователь
+    </option>
+
+    <option value="organizer">
+        Организатор
+    </option>
+
+    <option value="master">
+        Мастер
+    </option>
+
+    <option value="market">
+        Ярмарка
+    </option>
+
+    <option value="volunteer">
+        Волонтер
+    </option>
+
+</select>
+
+{% if is_moderator %}
+
+<a href="{{ url_for('moderator_panel') }}"
+   class="event-btn"
+   style="
+        display:block;
+        width:100%;
+        margin-top:15px;
+        text-align:center;
+        text-decoration:none;
+        padding:12px;
+   ">
+
+    ⚖️ Модерация
+
+</a>
+
+{% endif %}
+
+        </aside>
+
+        <main class="content-area">
+
+            <div id="content-user"
+                 class="tab-content active">
+
+                <h2 style="margin-bottom: 20px; color: #850004;">📌 Мои заявки</h2>
+
+                {% if my_applications %}
+
+                    {% set status_dict = {
+                        'pending': 'Отправлено',
+                        'checking': 'На рассмотрении',
+                        'accepted': 'Принято',
+                        'rejected': 'Отклонено',
+                        'reserve': 'В резерве'
+                    } %}
+
+                    {% for app in my_applications %}
+                    <div class="card" style="border-left: 5px solid #C8A2C8;">
+                        <h3 style="margin-bottom: 10px;">Мероприятие: {{ app.event_title }}</h3>
+                        <p><strong>Тип заявки:</strong> {{ app.application_type }}</p>
+                        <p><strong>Никнейм / Название:</strong> {{ app.nickname }} / {{ app.performance_name }}</p>
+                        
+                        <p style="margin-top: 15px;">
+                            <strong>Статус:</strong> 
+                            <span class="status-badge 
+                               {% if app.status == 'pending' %}bg-pending
+                               {% elif app.status == 'checking' %}bg-checking
+                                {% elif app.status == 'accepted' %}bg-accepted
+                                {% elif app.status == 'rejected' %}bg-rejected
+                                {% elif app.status == 'reserve' %}bg-reserve
+                                   {% endif %}">
+                       {{ status_dict[app.status] }}
+                            </span>
+                        </p>
+                    </div>
+                    {% endfor %}
+
+                {% else %}
+                    <div class="card">
+                        У вас пока нет отправленных заявок
+                    </div>
+                {% endif %}
+
+                <h3 style="margin-top: 40px; margin-bottom: 15px;">Моя галерея</h3>
+
+                <div class="gallery">
+
+                    <div class="gallery-item"
+                         onclick="triggerFile('galleryInput')">
+
+                        + фото
+
+                    </div>
+
+                    {% for image in gallery %}
+
+                        <img src="{{ image.image_url }}"
+                             class="gallery-photo">
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <div id="content-organizer"
+                 class="tab-content">
+
+                <div class="card">
+
+                    <h2>🎤 Создать мероприятие</h2>
+
+                    <form action="{{ url_for('create_event') }}"
+                          method="POST"
+                          enctype="multipart/form-data">
+
+                        <h3>Основная информация</h3>
+
+                        <input type="text"
+                               name="event_title"
+                               placeholder="Название мероприятия"
+                               required
+                               class="event-input">
+
+                        <input type="text"
+                               name="theme"
+                               placeholder="Тематика"
+                               class="event-input">
+
+                        <textarea name="description"
+                                  placeholder="Описание"
+                                  class="event-textarea"></textarea>
+
+                        <textarea name="rules"
+                                  placeholder="Правила участия"
+                                  class="event-textarea"></textarea>
+
+                        <label>Срок подачи заявок</label>
+
+                        <input type="datetime-local"
+                               name="deadline"
+                               class="event-input">
+
+                        <hr>
+
+                        <h3>Технический райдер</h3>
+
+                        <label>Дата и время</label>
+
+                        <input type="datetime-local"
+                               name="event_date"
+                               class="event-input">
+
+                        <input type="text"
+                               name="location"
+                               placeholder="Место проведения"
+                               class="event-input">
+
+                        <h3>Параметры сцены</h3>
+
+                        <input type="number"
+                               name="stage_width"
+                               placeholder="Ширина сцены"
+                               class="event-input">
+
+                        <input type="number"
+                               name="stage_depth"
+                               placeholder="Глубина сцены"
+                               class="event-input">
+
+                        <input type="number"
+                               name="stage_height"
+                               placeholder="Высота сцены"
+                               class="event-input">
+
+                        <label>Фото сцены</label>
+
+                        <input type="file"
+                               name="stage_photo"
+                               accept="image/*"
+                               class="event-input">
+
+                        <h3>Реквизит</h3>
+
+                        <input type="number"
+                               name="tables_count"
+                               placeholder="Количество столов"
+                               class="event-input">
+
+                        <input type="number"
+                               name="chairs_count"
+                               placeholder="Количество стульев"
+                               class="event-input">
+
+                        <h3>Закулисное пространство</h3>
+
+                        <select name="backstage_available"
+                                class="event-input">
+
+                            <option value="yes">
+                                Есть
+                            </option>
+
+                            <option value="no">
+                                Нет
+                            </option>
+
+                        </select>
+
+                        <textarea name="backstage_description"
+                                  placeholder="Описание закулисного пространства"
+                                  class="event-textarea"></textarea>
+
+                        <h3>Световое оборудование</h3>
+
+                        <label>
+                            <input type="checkbox"
+                                   name="basic_light">
+                            Базовое освещение
+                        </label>
+
+                        <br><br>
+
+                        <label>
+                            <input type="checkbox"
+                                   name="color_light">
+                            Цветной свет
+                        </label>
+
+                        <br><br>
+
+                        <label>
+                            <input type="checkbox"
+                                   name="spot_light">
+                            Направленный свет
+                        </label>
+
+                        <br><br>
+
+                        <label>
+                            <input type="checkbox"
+                                   name="custom_equipment">
+
+                            Разрешено собственное оборудование
+                        </label>
+
+                        <br><br>
+
+                        <button type="submit"
+                                class="event-btn">
+
+                            СОЗДАТЬ МЕРОПРИЯТИЕ
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <h2 style="margin-top:40px;">
+                    🎪 Мои мероприятия
+                </h2>
+
+                {% if events %}
+
+                    {% for event in events %}
+
+                    <div class="event-card">
+
+                        {% if event.stage_photo %}
+
+                            <img src="{{ event.stage_photo }}"
+                                 class="event-photo">
+
+                        {% endif %}
+
+                        <div class="event-content">
+
+                            <h2>{{ event.title }}</h2>
+
+                            <p>
+                                <strong>Тематика:</strong>
+                                {{ event.theme }}
+                            </p>
+
+                            <p>
+                                <strong>Дата:</strong>
+                                {{ event.event_date }}
+                            </p>
+
+                            <p>
+                                <strong>Место:</strong>
+                                {{ event.location }}
+                            </p>
+
+                            <p>
+                                <strong>Статус:</strong>
+                                {{ event.status }}
+                            </p>
+
+                            <div class="event-buttons">
+
+                                <a href="/event/{{ event.id }}"
+                                   class="event-manage-btn">
+
+                                    Открыть
+
+                                </a>
+
+                                <a href="/event/edit/{{ event.id }}"
+                                   class="event-manage-btn">
+
+                                    Редактировать
+
+                                </a>
+
+                                <a href="/event/applications/{{ event.id }}"
+                                   class="event-manage-btn">
+
+                                    Заявки
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="card">
+                        У вас пока нет мероприятий
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            <div id="content-volunteer"
+                 class="tab-content">
+
+                <div class="card">
+
+                    <h2>🤝 Волонтер</h2>
+
+                    <p style="margin-top:10px;">
+                        После заполнения анкеты и прохождения модерации
+                        рядом с вашим профилем появится отметка волонтера.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div id="content-master"
+                 class="tab-content">
+
+                <div class="card">
+
+                    <h2>🧵 Портфолио мастера</h2>
+
+                    <p style="margin-top:10px;">
+
+                        После прохождения модерации
+                        ваше портфолио будет доступно всем пользователям.
+
+                    </p>
+
+                </div>
+
+            </div>
+<div id="content-market"
+     class="tab-content">
+
+    <div class="card">
+
+        <h2>🛍️ Ярмарка</h2>
+
+        <p style="margin-top:10px;">
+            Все товары проходят проверку администрацией
+            перед публикацией.
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Добавить товар</h3>
+
+        <form action="{{ url_for('create_market_item') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <input type="text"
+                   name="item_name"
+                   placeholder="Название товара"
+                   required
+                   class="event-input">
+
+            <textarea name="item_description"
+                      placeholder="Описание товара"
+                      class="event-textarea"></textarea>
+
+            <input type="number"
+                   name="item_price"
+                   placeholder="Цена"
+                   required
+                   class="event-input">
+
+            <input type="number"
+                   name="item_quantity"
+                   placeholder="Количество в наличии"
+                   required
+                   class="event-input">
+
+            <label>Фото товара</label>
+
+            <input type="file"
+                   name="item_photo"
+                   accept="image/*"
+                   required
+                   class="event-input">
+
+            <button type="submit"
+                    class="event-btn">
+
+                Отправить на модерацию
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <h2 style="margin-top:40px;">
+        Мои товары
+    </h2>
+
+    {% if market_items %}
+
+        {% for item in market_items %}
+
+        <div class="event-card">
+
+            {% if item.photo_url %}
+
+                <img src="{{ item.photo_url }}"
+                     class="event-photo">
+
+            {% endif %}
+
+            <div class="event-content">
+
+                <h2>{{ item.name }}</h2>
+
+                <p>
+                    <strong>Цена:</strong>
+                    {{ item.price }} ₽
+                </p>
+
+                <p>
+                    <strong>Количество:</strong>
+                    {{ item.quantity }}
+                </p>
+
+                <p>
+                    <strong>Статус:</strong>
+                    {{ item.status }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card">
+
+            Пока нет добавленных товаров
+
+        </div>
+
+    {% endif %}
+
+</div>
+        </main>
+
+    </div>
+
+</div>
+
+<script>
+
+function switchRole(role){
+
+    if(role === "master"){
+        window.location.href = "/master/select";
+        return;
+    }
+
+    if(role === "market"){
+        document.querySelectorAll('.tab-content')
+            .forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+        document
+            .getElementById('content-market')
+            .classList.add('active');
+
+        return;
+    }
+
+    document.querySelectorAll('.tab-content')
+        .forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+    const target =
+        document.getElementById('content-' + role);
+
+    if(target){
+        target.classList.add('active');
+    }
+}
+
+function triggerFile(id){
+    document.getElementById(id).click();
+}
+
+</script>
+
+</body>
+</html>

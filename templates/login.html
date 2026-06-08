@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Yankī</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        /* ПОДКЛЮЧЕНИЕ ШРИФТА ЧЕРЕЗ FLASK */
+        @font-face {
+            font-family: 'YankiFont';
+            src: url("{{ url_for('static', filename='fonts/yaya.otf') }}") format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #F5E6DC;
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            /* ПУТЬ К ГЛИЦИНИИ ЧЕРЕЗ FLASK */
+            background-image: url("{{ url_for('static', filename='images/gliczin.png') }}"); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* ЗАГОЛОВОК "ВХОД" ПО ЦЕНТРУ СВЕРХУ */
+        .page-title {
+            margin-top: 15vh;
+            font-size: 10vh;
+            font-family: 'YankiFont', serif;
+            line-height: 1;
+            background: linear-gradient(to left, #850004 100%, #850004 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: -2px 0px 0px #C8A2C8;
+            display: inline-block;
+        }
+
+        /* ФОРМА ВХОДА */
+        .login-form {
+            margin-top: 5vh;
+            width: 320px; 
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+        }
+
+        .reg-input {
+            width: 100%;
+            height: 50px;
+            border: 2px solid #E47D7B;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0 15px;
+            font-size: 18px;
+            color: #3A2E2A;
+            outline: none;
+        }
+
+        /* КНОПКА ВОЙТИ */
+        .submit-btn {
+            width: 100%;
+            height: 60px;
+            background-color: #E47D7B;
+            color: white;
+            border: none;
+            font-family: 'YankiFont', serif;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submit-btn:hover {
+            background-color: #850004;
+            box-shadow: 0 5px 15px rgba(133, 0, 4, 0.3);
+        }
+
+        /* ССЫЛКА НА РЕГИСТРАЦИЮ */
+        .back-link {
+            margin-top: 2vh;
+            text-align: center;
+            font-family: 'Noto Serif', serif;
+            font-style: italic;
+            font-size: 16px;
+            color: #3A2E2A;
+            text-decoration: none;
+        }
+
+        .back-link b { color: #E47D7B; }
+
+        /* Всплывающие уведомления об ошибках (неправильный пароль и т.д.) */
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        .flash-message {
+            padding: 10px;
+            background-color: rgba(255, 204, 204, 0.9);
+            border: 1px solid #ff0000;
+            color: #850004;
+            font-family: 'Noto Serif', serif;
+            font-size: 14px;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    
+    <h1 class="page-title">Вход</h1>
+
+    <form class="login-form" method="POST" action="/login">
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                {% for message in messages %}
+                    <li class="flash-message">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <input type="email" name="email" class="reg-input" placeholder="Email" required>
+        <input type="password" name="password" class="reg-input" placeholder="Пароль" required>
+        
+        <button type="submit" class="submit-btn">ВОЙТИ</button>
+
+        <a href="{{ url_for('register') }}" class="back-link">
+            Нет аккаунта? <b>Зарегистрироваться!</b>
+        </a>
+    </form>
+
+</div>
+
+</body>
+</html>

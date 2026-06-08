@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор роли мастера | Yankī</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@1,400&display=swap');
+
+        @font-face {
+            font-family: 'YankiFont';
+            src: url("{{ url_for('static', filename='fonts/yaya.otf') }}") format('opentype');
+        }
+
+        body {
+            margin: 0;
+            background: #F5E6DC;
+            font-family: Arial, sans-serif;
+            color: #3A2E2A;
+        }
+
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{{ url_for('static', filename='images/gliczin.png') }}");
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-family: 'YankiFont', serif;
+            font-size: 5vh;
+            color: #850004;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 70vw;
+        }
+
+        .card {
+            display: block;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #E47D7B;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+
+            text-decoration: none;
+            color: #3A2E2A;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+            background: rgba(200,162,200,0.3);
+        }
+
+        .title {
+            font-family: 'YankiFont', serif;
+            color: #850004;
+            font-size: 3vh;
+            margin-bottom: 10px;
+        }
+
+        .desc {
+            font-size: 1.8vh;
+            font-family: 'Noto Serif', serif;
+        }
+
+        .back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #850004;
+            text-decoration: none;
+            font-family: 'Noto Serif', serif;
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="{{ url_for('cabinet') }}" class="back">← назад</a>
+
+<div class="wrapper">
+
+    <h1>Выберите специализацию</h1>
+
+    <div class="cards">
+
+        <a class="card" href="/master/crafter">
+            <div class="title">Крафтер</div>
+            <div class="desc">
+                Создание костюмов, реквизита, изделий.<br>
+                Портфолио, прайс, заказы, отзывы.
+            </div>
+        </a>
+
+        <a class="card" href="/master/photographer">
+            <div class="title">Фотограф / Оператор</div>
+            <div class="desc">
+                Фото / видео услуги, портфолио, заказы.
+            </div>
+        </a>
+
+        <a class="card" href="/master/makeup">
+            <div class="title">Визажист</div>
+            <div class="desc">
+                Макияж, грим, спецэффекты, прайс.
+            </div>
+        </a>
+
+        <a class="card" href="/master/wigmaker">
+            <div class="title">Вигмейкер</div>
+            <div class="desc">
+                Парики, стилизация, окрашивание, заказы.
+            </div>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
